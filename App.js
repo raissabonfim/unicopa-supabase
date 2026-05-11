@@ -6,6 +6,7 @@ import DiaCard from './components/DiaCard'
 export default function App() {
 
   const jogos = dados.jogos
+  const hoje = formatarData(new Date())
 
   const agruparPorData = (jogos) => {
     return jogos.reduce((acc, jogo) => {
@@ -31,8 +32,6 @@ export default function App() {
 
   const jogosAgrupados = agruparPorData(jogosOrdenados)
 
-
-  
   const jogosTratados = Object.keys(jogosAgrupados).map(data => {
     return {
       title: data,
