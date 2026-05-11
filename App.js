@@ -1,42 +1,38 @@
 import { StyleSheet, Text, View, Image, ImageBackground, SectionList } from 'react-native';
-import GameCard from './components/GameCard';
 import dados from './assets/dados.json'
+import { formatarData } from './utils/DateFormat';
+import DiaCard from './components/DiaCard';
 
 export default function App() {
 
-  const jogos = dados.jogos
-
-  const formatarData = (dataFormatar) => {
-    const [ano, mes, dia] = dataFormatar.split('-');
-    return `${dia}/${mes}`;
-  };
+  const jogos = dados.jogos;
 
   const agruparPorData = (jogos) => {
     return jogos.reduce((acc, jogo) => {
 
-      const data = jogo.data_brasilia
+      const data = formatarData(jogo.data_brasilia);
 
       if (!acc[data]) {
-        acc[data] = []
+        acc[data] = [];
       }
 
-      acc[data].push(jogo)
+      acc[data].push(jogo);
 
-      return acc
+      return acc;
 
-    }, {})
+    }, {});
   }
 
-  const jogosAgrupados = agruparPorData(jogos)
+  const jogosAgrupados = agruparPorData(jogos);
 
   const jogosTratados = Object.keys(jogosAgrupados).map(data => {
     return {
       title: data,
       data: jogosAgrupados[data]
     }
-  })
+  });
 
-  return (
+return (
     <ImageBackground style={styles.container}
       source={require('./assets/bg-overlay.png')}>
       <Image style={styles.logo}
@@ -47,25 +43,12 @@ export default function App() {
 
       <SectionList
         sections={jogosTratados}
-        keyExtractor={(item, index) => item + index}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={() => null}
         renderSectionHeader={({ section }) => (
-          <View style={styles.card} >
 
-            <Text style={styles.data}> {formatarData(section.title)} </Text>
-              {
-                section.data.map((jogo) => (
-                  <GameCard key={jogo.id} game={jogo} />
-                ))
-              }
-
-
-
-          </View>
-        )
-        }
-
-
+          <DiaCard data={section.title} jogos={section.data} />
+        )}
       />
 
     </ImageBackground>
@@ -103,12 +86,5 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10
-  },
-
-  jogo: {
-    marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1e2d3d',
-    paddingBottom: 15
   },
 });
