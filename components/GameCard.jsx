@@ -1,8 +1,16 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity
+} from 'react-native'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { TEAM_FLAGS } from '../utils/flagMapping'
+
+import { supabase } from '../utils/supabase'
 
 export default function GameCard({ game }) {
 
@@ -12,12 +20,57 @@ export default function GameCard({ game }) {
   const timeFora = TEAM_FLAGS[game.sigla_fora]
 
   const isBrazil =
-    game.sigla_casa === 'BRA' || game.sigla_fora === 'BRA'
+    game.sigla_casa === 'BRA' ||
+    game.sigla_fora === 'BRA'
+
+  useEffect(() => {
+
+    verificarFavorito()
+
+  }, [])
+
+  async function verificarFavorito() {
+
+    const { data } = await supabase
+      .from('favoritos')
+      .select('*')
+      .eq('id', game.id)
+
+    if (data.length > 0) {
+      setFavorito(true)
+    }
+
+  }
+
+  async function toggleFavorito() {
+
+    if (favorito) {
+
+      await supabase
+        .from('favoritos')
+        .delete()
+        .eq('id', game.id)
+
+      setFavorito(false)
+
+    } else {
+
+      await supabase
+        .from('favoritos')
+        .insert({
+          id: game.id
+        })
+
+      setFavorito(true)
+
+    }
+
+  }
 
   return (
 
     <TouchableOpacity
-      onPress={() => setFavorito(!favorito)}
+      onPress={toggleFavorito}
     >
 
       <View style={[
