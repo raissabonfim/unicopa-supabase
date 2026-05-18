@@ -140,7 +140,7 @@ export default function App() {
         <View style={styles.semJogos}>
 
           <Text style={styles.textoSemJogos}>
-            Nenhum jogo carregado
+            Nenhum jogo carregado.
           </Text>
 
         </View>
