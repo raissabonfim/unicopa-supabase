@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, Image, ImageBackground, SectionList } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ImageBackground,
+  SectionList,
+  TouchableOpacity
+} from 'react-native'
 
 import { formatarData } from './utils/DateFormat'
 import { agruparPorData } from './utils/agruparPorData'
@@ -12,6 +20,7 @@ import { supabase } from './utils/supabase'
 export default function App() {
 
   const [jogos, setJogos] = useState([])
+  const [grupoSelecionado, setGrupoSelecionado] = useState(null)
 
   useEffect(() => {
 
@@ -34,7 +43,11 @@ export default function App() {
 
   const hoje = formatarData(new Date())
 
-  const jogosOrdenados = [...jogos].sort((a, b) => {
+  const jogosFiltrados = grupoSelecionado
+    ? jogos.filter(jogo => jogo.grupo === grupoSelecionado)
+    : jogos
+
+  const jogosOrdenados = [...jogosFiltrados].sort((a, b) => {
 
     return (
       new Date(`${a.data_brasilia} ${a.hora_brasilia}`) -
@@ -67,6 +80,36 @@ export default function App() {
       />
 
       <Text style={styles.title}>CALENDÁRIO</Text>
+
+      <View style={styles.filtros}>
+
+        {['A', 'B', 'C', 'D'].map((grupo) => (
+
+          <TouchableOpacity
+            key={grupo}
+            style={[
+              styles.botaoGrupo,
+              grupoSelecionado === grupo &&
+              styles.botaoGrupoAtivo
+            ]}
+            onPress={() =>
+              setGrupoSelecionado(
+                grupoSelecionado === grupo
+                  ? null
+                  : grupo
+              )
+            }
+          >
+
+            <Text style={styles.textoGrupo}>
+              Grupo {grupo}
+            </Text>
+
+          </TouchableOpacity>
+
+        ))}
+
+      </View>
 
       <SectionList
         sections={jogosTratados}
@@ -108,6 +151,27 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: 'white',
+  },
+
+  filtros: {
+    flexDirection: 'row',
+    gap: 10,
+    marginVertical: 15,
+  },
+
+  botaoGrupo: {
+    backgroundColor: '#1e2d3d',
+    padding: 10,
+    borderRadius: 8
+  },
+
+  botaoGrupoAtivo: {
+    backgroundColor: '#f2cc2f'
+  },
+
+  textoGrupo: {
+    color: 'white',
+    fontWeight: 'bold'
   },
 
   card: {
