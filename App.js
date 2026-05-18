@@ -17,12 +17,35 @@ import { useEffect, useState } from 'react'
 
 import { supabase } from './utils/supabase'
 
+import jogosJson from './data/jogos.json'
+
 export default function App() {
 
   const [jogos, setJogos] = useState([])
   const [grupoSelecionado, setGrupoSelecionado] = useState(null)
 
   useEffect(() => {
+
+    async function importarJogos() {
+
+      for (const jogo of jogosJson) {
+
+        const { data } = await supabase
+          .from('jogos')
+          .select('id')
+          .eq('id', jogo.id)
+
+        if (data.length === 0) {
+
+          await supabase
+            .from('jogos')
+            .insert(jogo)
+
+        }
+
+      }
+
+    }
 
     async function carregarJogos() {
 
@@ -37,6 +60,7 @@ export default function App() {
 
     }
 
+    importarJogos()
     carregarJogos()
 
   }, [])
@@ -111,19 +135,33 @@ export default function App() {
 
       </View>
 
-      <SectionList
-        sections={jogosTratados}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={() => null}
-        renderSectionHeader={({ section }) => (
+      {jogosTratados.length === 0 ? (
 
-          <DiaCard
-            data={section.title}
-            jogos={section.data}
-          />
+        <View style={styles.semJogos}>
 
-        )}
-      />
+          <Text style={styles.textoSemJogos}>
+            Nenhum jogo carregado
+          </Text>
+
+        </View>
+
+      ) : (
+
+        <SectionList
+          sections={jogosTratados}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={() => null}
+          renderSectionHeader={({ section }) => (
+
+            <DiaCard
+              data={section.title}
+              jogos={section.data}
+            />
+
+          )}
+        />
+
+      )}
 
     </ImageBackground>
 
@@ -171,6 +209,19 @@ const styles = StyleSheet.create({
 
   textoGrupo: {
     color: 'white',
+    fontWeight: 'bold'
+  },
+
+  semJogos: {
+    marginTop: 50,
+    backgroundColor: '#0c1b2a',
+    padding: 20,
+    borderRadius: 10
+  },
+
+  textoSemJogos: {
+    color: 'white',
+    fontSize: 18,
     fontWeight: 'bold'
   },
 

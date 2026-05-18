@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "grupo": "A",
+    "confronto": "Rodada 1",
+    "sigla_casa": "BRA",
+    "sigla_fora": "ARG",
+    "hora_brasilia": "16:00",
+    "data_brasilia": "2026-06-18",
+    "estadio": "Maracanã",
+    "cidade": "Rio de Janeiro",
+    "pais": "Brasil"
+  },
+  {
+    "id": 2,
+    "grupo": "B",
+    "confronto": "Rodada 1",
+    "sigla_casa": "FRA",
+    "sigla_fora": "GER",
+    "hora_brasilia": "19:00",
+    "data_brasilia": "2026-06-19",
+    "estadio": "Arena",
+    "cidade": "São Paulo",
+    "pais": "Brasil"
+  }
+]
