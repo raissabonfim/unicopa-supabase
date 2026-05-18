@@ -2,13 +2,16 @@ import { StyleSheet, Text, View } from 'react-native'
 
 import GameCard from './GameCard'
 
-import { formatarData } from '../utils/DateFormat'
-
 export default function DiaCard({ data, jogos }) {
 
-  const hoje = formatarData(new Date().toISOString().split('T')[0])
+  const hoje = new Date()
 
-  const isHoje = data === hoje
+  const dia = String(hoje.getDate()).padStart(2, '0')
+  const mes = String(hoje.getMonth() + 1).padStart(2, '0')
+
+  const dataHoje = `${dia}/${mes}`
+
+  const isHoje = data === dataHoje
 
   return (
 
@@ -19,10 +22,12 @@ export default function DiaCard({ data, jogos }) {
       </Text>
 
       {jogos.map((game) => (
+
         <GameCard
           key={game.id}
           game={game}
         />
+
       ))}
 
     </View>
